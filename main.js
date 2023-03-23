@@ -2,32 +2,62 @@ const token=~~[Math.random() * 12345678]
 
 const pictures=['1.jpg','2.jpg','3.jpg']
 
-function login(username, callback){
+function login(username){
     console.log('process token user now')
-    setTimeout(()=>{
-        callback({ token, username }); 
-    },200)
+    return new Promise((success,failed)=>{
+        setTimeout(()=>{
+            if(username != "yuska_alfian")  failed("sorry wrong data"); 
+            success({token})
+        },200)
+    })
 }
 
-function getUser(token,callback){
+function getUser(token){
     console.log('processing.. apiKey')
-    if (token)
-      setTimeout(() => {
-        callback ({ apiKey: "x123" })
-      }, 500);
+    return new Promise((success,failed)=>{
+        if(!token) failed ("Sorry no token.cannot access")
+          setTimeout(() => {
+            success ({ apiKey: "x123" })
+          }, 500);
+
+    })
 }
 
 function getPictures(apiKey){
-     if(apiKey)return pictures
+    console.log("processing.. pictures");
+    return new Promise((success,failed)=>{
+        if(!apiKey) failed ("no apikey key")
+        setTimeout(()=>{
+            success ({pic:pictures})
+        },1500)
+        
+    })
 }
 
-login('yuska', function(response){
-        const {token}= response
-        // console.log('token=>',token)
-        getUser(token,function(response){
-            console.log(response)
-        })
-})
+async function userDisplay(){
+    
+    const {token}= await login('yuska_alfian')
+    const {apiKey}= await getUser(token)
+    const {pic}= await getPictures(apiKey)
+
+    console.log(`
+            'token anda adalah' ${token}
+            'apikey anda adalah'${apiKey}
+            'data picture anda adalah' ${pic}    
+    `)
+}
+
+userDisplay()
+
+// const user=login("123456")
+// user.then(function(response){
+//     const {token}=response
+//     getUser(token).then(function(response){
+//         console.log({response})
+//             const {apiKey}=response
+//             console.log(apiKey)
+//     }).catch(err=>console.log(err))
+// }).catch(err=>console.log(err))
 
 
 
